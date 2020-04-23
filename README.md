@@ -30,13 +30,13 @@ Type of process:
 --enc or --dec
 ```
 
-Key ( if you don'y pass any key, default key will be used):
+Key ( if you don't pass any key, default key will be used ):
 
 ```
 --key=00000000
 ```
 
-Exaplme usage ( in src folder):
+Exaplme usage ( in src folder ):
 
 ```
 node index.js --img=yoda.bmp --enc
