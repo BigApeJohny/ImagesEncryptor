@@ -35,6 +35,7 @@ function decryption(data, key) {
 }
 async function encryptBMP(img, key) {
     console.log('Starting ', img, ' encryption...');
+    const outputImg = 'sdes-encrypted.bmp';
     let arrayBuffer = await imageManager.getImageData(img);
     let newData = arrayBuffer.map((p, i) => {
         if (i < 54) {
@@ -44,11 +45,12 @@ async function encryptBMP(img, key) {
             return parseInt(encryption(data, key), 2);
         }
     });
-    imageManager.createImage(newData, 'encryption.bmp');
-    console.log('Encryption ended. Image saved as "encryption.bmp"');
+    imageManager.createImage(newData, outputImg);
+    console.log('Encryption ended. Image saved as ' + outputImg);
 }
 async function decryptionBMP(img, key) {
     console.log('Starting ', img, ' decryption...');
+    const outputImg = 'sdes-decrypted.bmp';
     let arrayBuffer = await imageManager.getImageData(img);
     let newData = arrayBuffer.map((p, i) => {
         if (i < 54) {
@@ -58,19 +60,17 @@ async function decryptionBMP(img, key) {
             return parseInt(decryption(data, key), 2);
         }
     });
-    imageManager.createImage(newData, 'decryption.bmp');
-    console.log('Decryption ended. Image saved as "decryption.bmp"');
+    imageManager.createImage(newData, outputImg);
+    console.log('Decryption ended. Image saved as ' + outputImg);
 }
 async function encryptImage(imgName, key) {
     // detect extension
-    // returning array buffer
 
     // BMP
     await encryptBMP(imgName, key);
 }
 async function decyptImage(imgName, key) {
     // detect extension
-    // returning array buffer
 
     // BMP
     await decryptionBMP(imgName, key);
