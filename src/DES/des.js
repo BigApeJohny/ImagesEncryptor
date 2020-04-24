@@ -20,6 +20,16 @@ function round(halves, subkey) {
     const xor = keyFunctions.xor(halves.l, roundFnResult);
     return halves.r + xor;
 }
+function decrypt(data, key) {
+    const keys = keyGen.generate(key);
+    const IP = keyFunctions.permuteKey(data, permutations.IP);
+    let previousKey = IP;
+    for (let i = 15; i >= 0; i--) {
+        previousKey = round(keyFunctions.divideKey(previousKey), keys.subkeys[i]);
+    }
+    previousKey = keyFunctions.crossKeys(previousKey);
+    return keyFunctions.permuteKey(previousKey, permutations.invertedIP);
+}
 function encrypt(data, key) {
     const keys = keyGen.generate(key);
     const IP = keyFunctions.permuteKey(data, permutations.IP);
@@ -32,3 +42,4 @@ function encrypt(data, key) {
 }
 
 module.exports.encrypt = encrypt;
+module.exports.decrypt = decrypt;

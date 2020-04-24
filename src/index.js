@@ -8,7 +8,7 @@ const DES_DEAFULT_KEY = '0001001100110100010101110111100110011011101111001101111
 const options = commandLineArgs(argsValidator.arguments);
 
 let a = DES.encrypt('0000000100100011010001010110011110001001101010111100110111101111', DES_DEAFULT_KEY);
-console.log(parseInt(a, 2).toString(16).toUpperCase());
+let b = DES.decrypt(a, DES_DEAFULT_KEY);
 /*
 if (argsValidator.validate(options)) {
     if (options.enc) {
