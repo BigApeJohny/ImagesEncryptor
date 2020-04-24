@@ -34,13 +34,11 @@ function leftShift(key, places) {
     return shift.join('',',');
 }
 function xor(key1, key) {
-    let kLength = key.length;
     let result = '';
-    let xor = (parseInt(key1, 2) ^ parseInt(key, 2)).toString(2);
-    for (let i = 0; i < (kLength - xor.length); i++) {
-        result += '0';
+    for (let i = 0; i < key1.length; i++) {
+        result += (key1[i] != key[i]) ? '1' : '0';
     }
-    return result + xor;
+    return result;
 }
 function expand(key) {
     return permuteKey(key, permutations.EP);
@@ -62,6 +60,18 @@ function toBitSize(key, size = 8) {
     }
     return result + key;
 }
+function divieToSixbits(key) {
+    let result = [];
+    let sixBits = '';
+    for (let i = 0; i < key.length; i++) {
+        sixBits += key[i];
+        if (sixBits.length === 6) {
+            result.push(sixBits);
+            sixBits = '';
+        }
+    }
+    return result;
+}
 
 module.exports.divideKey = divideKey;
 module.exports.connectHalfes = connectHalfes;
@@ -72,3 +82,4 @@ module.exports.expand = expand;
 module.exports.subtitutionBox = subtitutionBox;
 module.exports.crossKeys = crossKeys;
 module.exports.toBitSize = toBitSize;
+module.exports.divieToSixbits = divieToSixbits;

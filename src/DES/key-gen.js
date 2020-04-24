@@ -1,8 +1,9 @@
 const desData = require('./des-data');
 const keyFunctions = require('./key-functions');
+const permutations = desData.permutations;
 
 function generate(key) {
-    const Kplus = keyFunctions.permuteKey(key, desData.PC1);
+    const Kplus = keyFunctions.permuteKey(key, permutations.PC1);
     const KplusHalves = keyFunctions.divideKey(Kplus);
     let subkeyhalves = [KplusHalves]
     let subkeys = [];
@@ -16,7 +17,7 @@ function generate(key) {
         subkeys.push(
             keyFunctions.permuteKey(
                 keyFunctions.connectHalfes(subkeyhalves[i + 1]),
-                desData.PC2
+                permutations.PC2
             )
         );
     }
