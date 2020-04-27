@@ -42,14 +42,14 @@ function encrypt(data, key) {
     previousKey = keyFunctions.crossKeys(previousKey);
     return keyFunctions.permuteKey(previousKey, permutations.invertedIP);
 }
-async function decryptBMP(img, key) {
+async function decryptImgWithOffset(img, key, extension, offset) {
     console.log('Starting ', img, ' decryption...');
-    const outputImg = 'des-decrypted.bmp';
+    const outputImg = 'des-decrypted.' + extension;
     let arrayBuffer = await imageManager.getImageData(img);
     let temp = [];
     let a = '';
     arrayBuffer.forEach((p, i) => {
-        if ( i >= 54) {
+        if ( i >= offset) {
             a += keyFunctions.toBitSize(p.toString(2));
             if (a.length === 64) {
                 temp.push(decrypt(a, key));
@@ -68,23 +68,23 @@ async function decryptBMP(img, key) {
         }
     });
     let newData = arrayBuffer.map((p, i) => {
-        if (i < 54) {
+        if (i < offset) {
             return p;
         } else {
-            return parseInt(newTemp[i - 54], 2);
+            return parseInt(newTemp[i - offset], 2);
         }
     });
     imageManager.createImage(newData, outputImg);
     console.log('Decrypted ended. Image saved as ' + outputImg);
 }
-async function encryptBMP(img, key) {
+async function encryptImgWithOffset(img, key, extension, offset) {
     console.log('Starting ', img, ' encryption...');
-    const outputImg = 'des-encrypted.bmp';
+    const outputImg = 'des-encrypted.' + extension;
     let arrayBuffer = await imageManager.getImageData(img);
     let temp = [];
     let a = '';
     arrayBuffer.forEach((p, i) => {
-        if ( i >= 54) {
+        if ( i >= offset) {
             a += keyFunctions.toBitSize(p.toString(2));
             if (a.length === 64) {
                 temp.push(encrypt(a, key));
@@ -104,10 +104,10 @@ async function encryptBMP(img, key) {
         }
     });
     let newData = arrayBuffer.map((p, i) => {
-        if (i < 54) {
+        if (i < offset) {
             return p;
         } else {
-            return parseInt(newTemp[i - 54], 2);
+            return parseInt(newTemp[i - offset], 2);
         }
     });
     imageManager.createImage(newData, outputImg);
@@ -115,21 +115,29 @@ async function encryptBMP(img, key) {
 }
 function encyrptImage(img, key){
     key = keyFunctions.toBitSize(hexToBinary(key), 64);
-    let extension = imageManager.getImgExtension(img);
+    const extension = imageManager.getImgExtension(img);
     if (extension == 'bmp') {
-        encryptBMP(img, key);
+        encryptImgWithOffset(img, key, extension, 54);
+    } else if (extension == 'ppm') {
+        encryptImgWithOffset(img, key, extension, 50);
+    } else if (extension == 'tga') {
+        encryptImgWithOffset(img, key, extension, 18);
     } else {
         console.log('Unsupported image extension.', extension);
     }   
 }
 function decryptImage(img, key){
     key = keyFunctions.toBitSize(hexToBinary(key), 64);
-    let extension = imageManager.getImgExtension(img);
+    const extension = imageManager.getImgExtension(img);
     if (extension == 'bmp') {
-        decryptBMP(img, key);
+        decryptImgWithOffset(img, key, extension, 54);
+    } else if (extension == 'ppm') {
+        decryptImgWithOffset(img, key, extension, 50);
+    } else if (extension == 'tga') {
+        decryptImgWithOffset(img, key, extension, 18);
     } else {
         console.log('Unsupported image extension.', extension);
-    }   
+    }     
 }
 
 module.exports.encyrptImage = encyrptImage;

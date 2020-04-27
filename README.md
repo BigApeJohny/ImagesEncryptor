@@ -1,6 +1,6 @@
 # Images encryptor
 
-Console app to encrypt and decrypt images.
+Console app to encrypt and decrypt *.bmp, *.tga, *.ppm images.
 
 ## Getting Started
 
