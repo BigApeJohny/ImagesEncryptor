@@ -8,12 +8,15 @@ async function getImageData(img) {
         });
     });
 }
-
 function createImage(arrayBuffer, imgName) {
     fs.writeFile(imgName, arrayBuffer, (err) => {
         if (err) throw err;
     });
 }
+function getImgExtension(img) {
+   return img.split('.').reverse()[0];
+}
 
 module.exports.getImageData = getImageData;
 module.exports.createImage = createImage;
+module.exports.getImgExtension = getImgExtension;

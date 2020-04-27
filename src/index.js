@@ -4,16 +4,21 @@ const SDES = require('./SDES/sdes');
 const DES = require('./DES/des');
 
 const DEFAULT_KEY = '1010000010';
-const DES_DEAFULT_KEY = '0001001100110100010101110111100110011011101111001101111111110001'
+const DES_DEAFULT_KEY = '133457799BBCE000';
 const options = commandLineArgs(argsValidator.arguments);
-
-let a = DES.encrypt('0000000100100011010001010110011110001001101010111100110111101111', DES_DEAFULT_KEY);
-let b = DES.decrypt(a, DES_DEAFULT_KEY);
-/*
 if (argsValidator.validate(options)) {
-    if (options.enc) {
-        SDES.encryptImage(options.img, (options.key !== undefined) ? options.key : DEFAULT_KEY);
-    } else if (options.dec) {
-        SDES.decyptImage(options.img, (options.key !== undefined) ? options.key : DEFAULT_KEY);
+    if (options.sdes) {
+        if (options.enc) {
+            SDES.encryptImage(options.img, (options.key !== undefined) ? options.key : DEFAULT_KEY);
+        } else if (options.dec) {
+            SDES.decyptImage(options.img, (options.key !== undefined) ? options.key : DEFAULT_KEY);
+        }
     }
-}*/
+    if (options.des) {
+        if (options.enc) {
+            DES.encyrptImage(options.img, (options.key !== undefined) ? options.key : DES_DEAFULT_KEY);
+        } else if (options.dec) {
+            DES.decryptImage(options.img, (options.key !== undefined) ? options.key : DES_DEAFULT_KEY);
+        }
+    }
+}

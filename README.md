@@ -30,14 +30,28 @@ Type of process:
 --enc or --dec
 ```
 
+Algorithm to use:
+
+```
+--sdes or --des
+```
+
 Key ( if you don't pass any key, default key will be used ):
+
+For SDES ( 8 characters long in binary ):
 
 ```
 --key=00000000
 ```
 
+For DES ( 16 characters long in hex ):
+
+```
+--key=ffffffffffffffff
+```
+
 Exaplme usage ( in src folder ):
 
 ```
-node index.js --img=yoda.bmp --enc
+node index.js --des --enc --img=yoda.bmp
 ```

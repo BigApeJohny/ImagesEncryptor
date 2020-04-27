@@ -1,6 +1,8 @@
 const keyGen = require('./key-gen');
 const desData = require('./des-data');
 const keyFunctions = require('./key-functions');
+const imageManager = require('./../image-loader');
+const hexToBinary = require('hex-to-binary');
 const permutations = desData.permutations;
 
 function roundFunction(right, subkey) {
@@ -40,6 +42,95 @@ function encrypt(data, key) {
     previousKey = keyFunctions.crossKeys(previousKey);
     return keyFunctions.permuteKey(previousKey, permutations.invertedIP);
 }
+async function decryptBMP(img, key) {
+    console.log('Starting ', img, ' decryption...');
+    const outputImg = 'des-decrypted.bmp';
+    let arrayBuffer = await imageManager.getImageData(img);
+    let temp = [];
+    let a = '';
+    arrayBuffer.forEach((p, i) => {
+        if ( i >= 54) {
+            a += keyFunctions.toBitSize(p.toString(2));
+            if (a.length === 64) {
+                temp.push(decrypt(a, key));
+                a = '';
+            }
+            if (i == (arrayBuffer.length -1) && a.length !== 64) {
+                a = keyFunctions.toBitSize(a, 64);
+                temp.push(decrypt(a, key));
+            }
+        }
+    });
+    let newTemp = [];
+    temp.forEach(t => {
+        for (let i = 0; i < 8; i++) {
+            newTemp.push(t.slice(i * 8, i * 8 + 8));
+        }
+    });
+    let newData = arrayBuffer.map((p, i) => {
+        if (i < 54) {
+            return p;
+        } else {
+            return parseInt(newTemp[i - 54], 2);
+        }
+    });
+    imageManager.createImage(newData, outputImg);
+    console.log('Decrypted ended. Image saved as ' + outputImg);
+}
+async function encryptBMP(img, key) {
+    console.log('Starting ', img, ' encryption...');
+    const outputImg = 'des-encrypted.bmp';
+    let arrayBuffer = await imageManager.getImageData(img);
+    let temp = [];
+    let a = '';
+    arrayBuffer.forEach((p, i) => {
+        if ( i >= 54) {
+            a += keyFunctions.toBitSize(p.toString(2));
+            if (a.length === 64) {
+                temp.push(encrypt(a, key));
+                a = '';
+            }
+            if (i == (arrayBuffer.length -1) && a.length !== 64) {
+                a = keyFunctions.toBitSize(a, 64);
+                temp.push(encrypt(a, key));
+                a = '';
+            }
+        }
+    });
+    let newTemp = [];
+    temp.forEach(t => {
+        for (let i = 0; i < 8; i++) {
+            parseInt(newTemp.push(t.slice(i * 8, i * 8 + 8)), 2);
+        }
+    });
+    let newData = arrayBuffer.map((p, i) => {
+        if (i < 54) {
+            return p;
+        } else {
+            return parseInt(newTemp[i - 54], 2);
+        }
+    });
+    imageManager.createImage(newData, outputImg);
+    console.log('Encryption ended. Image saved as ' + outputImg);
+}
+function encyrptImage(img, key){
+    key = keyFunctions.toBitSize(hexToBinary(key), 64);
+    let extension = imageManager.getImgExtension(img);
+    if (extension == 'bmp') {
+        encryptBMP(img, key);
+    } else {
+        console.log('Unsupported image extension.', extension);
+    }   
+}
+function decryptImage(img, key){
+    key = keyFunctions.toBitSize(hexToBinary(key), 64);
+    let extension = imageManager.getImgExtension(img);
+    if (extension == 'bmp') {
+        decryptBMP(img, key);
+    } else {
+        console.log('Unsupported image extension.', extension);
+    }   
+}
 
-module.exports.encrypt = encrypt;
-module.exports.decrypt = decrypt;
+module.exports.encyrptImage = encyrptImage;
+module.exports.decryptImage = decryptImage;

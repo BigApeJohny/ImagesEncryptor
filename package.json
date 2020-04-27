@@ -4,7 +4,8 @@
   "description": "Encryptor for images",
   "main": "index.js",
   "dependencies": {
-    "command-line-args": "^5.1.1"
+    "command-line-args": "^5.1.1",
+    "hex-to-binary": "^1.0.1"
   },
   "devDependencies": {},
   "scripts": {
